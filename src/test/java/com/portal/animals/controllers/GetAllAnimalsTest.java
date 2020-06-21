@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static com.portal.animals.constants.ErrorMessage.Constants.BREED_SIZE_NOT_VALID_CODE;
+import static com.portal.animals.constants.ErrorMessage.Constants.TYPE_SIZE_NOT_VALID_CODE;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -153,7 +155,8 @@ public class GetAllAnimalsTest {
       .andExpect(status().isBadRequest())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
       .andExpect(jsonPath("code").exists())
-      .andExpect(jsonPath("description").exists());
+      .andExpect(jsonPath("description").exists())
+      .andExpect(jsonPath("code", equalTo(TYPE_SIZE_NOT_VALID_CODE)));
 
   }
 
@@ -209,7 +212,8 @@ public class GetAllAnimalsTest {
       .andExpect(status().isBadRequest())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
       .andExpect(jsonPath("code").exists())
-      .andExpect(jsonPath("description").exists());
+      .andExpect(jsonPath("description").exists())
+      .andExpect(jsonPath("code", equalTo(BREED_SIZE_NOT_VALID_CODE)));
 
   }
 

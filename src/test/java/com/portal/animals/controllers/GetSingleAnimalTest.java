@@ -1,5 +1,6 @@
 package com.portal.animals.controllers;
 
+import com.portal.animals.exceptions.AnimalNotFound;
 import com.portal.animals.presenters.AnimalDetailResponse;
 import com.portal.animals.presenters.AnimalFeatures;
 import com.portal.animals.services.AnimalService;
@@ -14,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static com.portal.animals.constants.ErrorMessage.ANIMAL_NOT_FOUND;
+import static com.portal.animals.constants.ErrorMessage.Constants.ANIMAL_NOT_FOUND_CODE;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.eq;
@@ -83,15 +86,16 @@ public class GetSingleAnimalTest {
 
   @Test
   @DisplayName("api /v1/animals/{animal_id} should return 404 http status code if animal is not present in system")
-  public void shouldReturnNotfoundIfAnimalWithGivenIdIsNotPresentInSystemV1() throws Exception {
+  public void shouldReturnNotFoundIfAnimalWithGivenIdIsNotPresentInSystemV1() throws Exception {
 
-    when(animalService.getAnimal(eq("2"))).thenReturn(null);
+    when(animalService.getAnimal(eq("2"))).thenThrow(new AnimalNotFound(ANIMAL_NOT_FOUND.getDescription()));
 
     this.mockMvc
       .perform(get(ALL_ANIMALS_BASE_URL + "/2"))
       .andExpect(status().isNotFound())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
       .andExpect(jsonPath("$.code").exists())
-      .andExpect(jsonPath("$.description").exists());
+      .andExpect(jsonPath("$.description").exists())
+      .andExpect(jsonPath("code", equalTo(ANIMAL_NOT_FOUND_CODE)));;
   }
 }
